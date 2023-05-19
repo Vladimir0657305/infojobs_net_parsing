@@ -106,10 +106,10 @@ def write_csv_links(data):
 def main():
     page = 1
     global last_page
-    # url = f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos&normalizedJobTitleIds=7411_75b63949-1b93-4bf2-a777-ccf978dc3e8a&provinceIds=&cityIds=&teleworkingIds=&categoryIds=&workdayIds=&educationIds=&segmentId=&contractTypeIds=&page={page}&sortBy=RELEVANCE&onlyForeignCountry=false&countryIds=&sinceDate=ANY&subcategoryIds='
+    # url = f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos'
     while True:
         links = get_links(
-            f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos&normalizedJobTitleIds=7411_75b63949-1b93-4bf2-a777-ccf978dc3e8a&provinceIds=&cityIds=&teleworkingIds=&categoryIds=&workdayIds=&educationIds=&segmentId=&contractTypeIds=&page={page}&sortBy=RELEVANCE&onlyForeignCountry=false&countryIds=&sinceDate=ANY&subcategoryIds=')
+            f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos')
         print('PAGE===>', page, last_page)
         if page > last_page:
             break
