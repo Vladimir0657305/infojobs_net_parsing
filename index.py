@@ -25,13 +25,11 @@ def get_links(url):
     # driver = webdriver.Chrome(options=options)
     driver = webdriver.Chrome()
     driver.get(url)
-    # wait = WebDriverWait(driver, 20)
-    time.sleep(30)
+    time.sleep(15)
 
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     last_page = int(soup.find(
         'ul', class_='sui-MoleculePagination').find_all('li', class_='sui-MoleculePagination-item')[-2].text.strip())
-    print('QQQQQQ===>', last_page)
 
     all_links = []
 
@@ -77,19 +75,53 @@ def get_links(url):
     return all_links
 
 
+def page_data(url):
+    driver = webdriver.Chrome()
+    driver.get(url)
+    time.sleep(15)
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    
+    title = soup.find('h1', id='prefijoPuesto').text.strip()
+    company = soup.find(
+        'div', class_='content-type-text').find('a').text.strip()
+    prefijoPoblacion = soup.find('span', id='prefijoPoblacion').text.strip()
+    prefijoProvincia = soup.find('a', id='prefijoProvincia').text.strip()
+    presencial = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[1].text.strip()
+    publicada = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[2].text.strip()
+    salario = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[3].text.strip()
+    experiencia = soup.find_all('ul', class_='list-default list-bullet-default small')[1].find_all('li')[0].text.strip()
+    tipo = soup.find_all('ul', class_='list-default list-bullet-default small')[1].find_all('li')[1].text.strip()
+    estudios = soup.find('span', id='prefijoEstMin').text.strip()
+    mínima = soup.find_all('ul', class_='list-default')[2].find_all('li')[1].text.strip()
+    conocimientos_label = soup.find_all('ul', class_='list-default')[2].find_all(
+        'li')[2].find('ul', class_='list-default list-inline').find_all('li')
+    conocimientos = ''
+    if conocimientos_label:
+        for i in conocimientos_label:
+            conocimientos += i.text.strip() + ', '
+    requisitos = soup.find_all('ul', class_='list-default')[2].find_all('li')[-1].text.strip()
+    descripcion = soup.find('div', id='prefijoDescripcion1').text.strip()
+    tipo_de_industria = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[0].text.strip()
+    categoria = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[1].text.strip()
+    nivel = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[2].text.strip()
+    personal_a_cargo = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[3].text.strip()
+    numero_de_vacantes = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[4].text.strip()
+    salario = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[-1].text.strip()
+    inscritos = soup.find(
+        'strong', id='candidate_application_message').text.strip()
+    
+    
+    print('DATA====>', title, company, prefijoPoblacion,
+          prefijoProvincia, presencial, publicada, salario, experiencia, tipo, estudios, mínima, conocimientos, requisitos, descripcion, tipo_de_industria, categoria, nivel, personal_a_cargo, numero_de_vacantes, salario, inscritos)
+
+    driver.quit()
+    return
 
 
 
-    # response = requests.get(url=url, headers=headers, proxies=proxies)
-    response = requests.get(url=url, headers=headers)
-    soup = BeautifulSoup(response.text, 'html.parser')
 
-    links = soup.find('ul', class_='ij-List ij-List--vertical ij-List--spaced').find_all(
-        'li').find('h2').text.strip()
-    location = soup.find('table', class_='ui celled striped table').find(
-        'tbody').find_all('tr')[2].find_all('td')[1].text.strip()
 
-    print(f'{ip}\nLocation: {location}')
+
 
 
 def write_csv_links(data):
@@ -105,17 +137,20 @@ def write_csv_links(data):
 
 def main():
     page = 1
-    global last_page
-    # url = f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos'
-    while True:
-        links = get_links(
-            f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos')
-        print('PAGE===>', page, last_page)
-        if page > last_page:
-            break
-        else:
-            page += 1
-    
+    global last_page    
+    # while True:
+    #     if page == 1:
+    #         links = get_links(f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos')
+    #     else:
+    #         get_links(
+    #             f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos&normalizedJobTitleIds=7411_75b63949-1b93-4bf2-a777-ccf978dc3e8a&provinceIds=&cityIds=&teleworkingIds=&categoryIds=&workdayIds=&educationIds=&segmentId=&contractTypeIds=&page={page}&sortBy=RELEVANCE&onlyForeignCountry=false&countryIds=&sinceDate=ANY&subcategoryIds=')
+    #     print('PAGE===>', page, last_page)
+    #     if page > last_page:
+    #         break
+    #     else:
+    #         page += 1
+
+    page_data('https://www.infojobs.net/tortosa/fotovotaica-montadores-placas-electricistas-tortosa/of-ie17a00bb064075938f12208a404059')
 
 if __name__ =='__main__':
     main()
