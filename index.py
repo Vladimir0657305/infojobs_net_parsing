@@ -84,13 +84,13 @@ def page_data(url):
     title = soup.find('h1', id='prefijoPuesto').text.strip()
     company = soup.find(
         'div', class_='content-type-text').find('a').text.strip()
-    prefijoPoblacion = soup.find('span', id='prefijoPoblacion').text.strip()
+    prefijoPoblacion = soup.find('span', id='prefijoPoblacion').text.strip().replace(',', ' ')
     prefijoProvincia = soup.find('a', id='prefijoProvincia').text.strip()
     presencial = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[1].text.strip()
-    publicada = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[2].text.strip()
+    publicada = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[2].text.strip().replace('\n', ' ')
     salario = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[3].text.strip()
     experiencia = soup.find_all('ul', class_='list-default list-bullet-default small')[1].find_all('li')[0].text.strip()
-    tipo = soup.find_all('ul', class_='list-default list-bullet-default small')[1].find_all('li')[1].text.strip()
+    tipo = soup.find_all('ul', class_='list-default list-bullet-default small')[1].find_all('li')[1].text
     estudios = soup.find('span', id='prefijoEstMin').text.strip()
     mínima = soup.find_all('ul', class_='list-default')[2].find_all('li')[1].text.strip()
     conocimientos_label = soup.find_all('ul', class_='list-default')[2].find_all(
@@ -98,7 +98,7 @@ def page_data(url):
     conocimientos = ''
     if conocimientos_label:
         for i in conocimientos_label:
-            conocimientos += i.text.strip() + ', '
+            conocimientos += i.text.strip() + ' '
     requisitos = soup.find_all('ul', class_='list-default')[2].find_all('li')[-1].text.strip()
     descripcion = soup.find('div', id='prefijoDescripcion1').text.strip()
     tipo_de_industria = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[0].text.strip()
@@ -106,16 +106,18 @@ def page_data(url):
     nivel = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[2].text.strip()
     personal_a_cargo = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[3].text.strip()
     numero_de_vacantes = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[4].text.strip()
-    salario = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[-1].text.strip()
+    salario2 = soup.find('div', class_='highlight-text border-top padding-top margin-top').find('ul', class_='list-default').find_all('li')[-1].text.strip()
     inscritos = soup.find(
         'strong', id='candidate_application_message').text.strip()
     
     
-    print('DATA====>', title, company, prefijoPoblacion,
-          prefijoProvincia, presencial, publicada, salario, experiencia, tipo, estudios, mínima, conocimientos, requisitos, descripcion, tipo_de_industria, categoria, nivel, personal_a_cargo, numero_de_vacantes, salario, inscritos)
-
+    print('DATA====>', url, title, company, prefijoPoblacion,
+          prefijoProvincia, presencial, publicada, salario, experiencia, tipo, estudios, mínima, conocimientos, requisitos, descripcion, tipo_de_industria, categoria, nivel, personal_a_cargo, numero_de_vacantes, salario2, inscritos)
+    
     driver.quit()
-    return
+    data = {'url': url, 'title': title, 'company': company, 'prefijoPoblacion': prefijoPoblacion, 'prefijoProvincia': prefijoProvincia, 'presencial': presencial, 'publicada': publicada, "salario": salario, 'experiencia': experiencia, 'tipo': tipo, 'estudios': estudios, 'mínima': mínima,
+            'conocimientos': conocimientos, 'requisitos': requisitos, 'descripcion': descripcion, 'tipo_de_industria': tipo_de_industria, 'categoria': categoria, 'nivel': nivel, 'personal_a_cargo': personal_a_cargo, 'numero_de_vacantes': numero_de_vacantes, 'salario2': salario2, 'inscritos': inscritos}
+    return data
 
 
 
@@ -135,9 +137,21 @@ def write_csv_links(data):
             print('SAVE=>', counter, i)
             counter += 1
 
+# Сохраняем результаты в CSV-файл
+
+
+def write_csv(data):
+    with open('jobs_data.csv', 'a', newline='', encoding='utf-8') as file:
+        # fieldnames = ['Name', 'Price']
+        writer = csv.writer(file)
+        # writer.writeheader()
+        writer.writerow((data['url'], data['title'],
+                        data['company'], data['prefijoPoblacion'], data['prefijoProvincia'], data['presencial'], data['publicada'], data["salario"], data['experiencia'], data['tipo'], data['estudios'], data['mínima'], data['conocimientos'], data['requisitos'], data['descripcion'], data['tipo_de_industria'], data['categoria'], data['nivel'], data['personal_a_cargo'], data['numero_de_vacantes'], data['salario2'], data['inscritos']))
+
 def main():
     page = 1
-    global last_page    
+    global last_page
+    all_data = []
     # while True:
     #     if page == 1:
     #         links = get_links(f'https://www.infojobs.net/ofertas-trabajo?keyword=Instalador%2Fa%20de%20paneles%20solares%20fotovoltaicos')
@@ -150,7 +164,10 @@ def main():
     #     else:
     #         page += 1
 
-    page_data('https://www.infojobs.net/tortosa/fotovotaica-montadores-placas-electricistas-tortosa/of-ie17a00bb064075938f12208a404059')
+    # cur_data = page_data('https://www.infojobs.net/tortosa/fotovotaica-montadores-placas-electricistas-tortosa/of-ie17a00bb064075938f12208a404059')
+    cur_data = page_data('https://www.infojobs.net/xirivella/instalador-placas-solares/of-if65571f10c4a168c42cf5efddf294d')
+    all_data.append(cur_data)
+    write_csv(cur_data)
 
 if __name__ =='__main__':
     main()
