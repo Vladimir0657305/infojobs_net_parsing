@@ -90,7 +90,7 @@ def page_data(url):
     publicada = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[2].text.strip().replace('\n', ' ')
     salario = soup.find('ul', class_='list-default list-bullet-default small').find_all('li')[3].text.strip()
     experiencia = soup.find_all('ul', class_='list-default list-bullet-default small')[1].find_all('li')[0].text.strip()
-    tipo = soup.find_all('ul', class_='list-default list-bullet-default small')[1].find_all('li')[1].text
+    tipo = soup.find_all('ul', class_='list-default list-bullet-default small')[1].find_all('li')[1].text.replace(',', ' ')
     estudios = soup.find('span', id='prefijoEstMin').text.strip()
     mínima = soup.find_all('ul', class_='list-default')[2].find_all('li')[1].text.strip()
     conocimientos_label = soup.find_all('ul', class_='list-default')[2].find_all(
@@ -141,7 +141,7 @@ def write_csv_links(data):
 
 
 def write_csv(data):
-    with open('jobs_data.csv', 'a', newline='', encoding='utf-8') as file:
+    with open('jobs_data.csv', 'a', newline='', encoding='utf-8-sig') as file:
         # fieldnames = ['Name', 'Price']
         writer = csv.writer(file)
         # writer.writeheader()
