@@ -32,6 +32,7 @@ def get_links(url):
         'ul', class_='sui-MoleculePagination').find_all('li', class_='sui-MoleculePagination-item')[-2].text.strip())
 
     all_links = []
+    wall_links = []
 
     while True:
         # Получение высоты страницы
